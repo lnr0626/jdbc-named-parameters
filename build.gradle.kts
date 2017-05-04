@@ -27,5 +27,5 @@ repositories {
 
 dependencies {
     testCompile("junit:junit:4.12")
-    testCompile("com.google.guava:guava:16.0.1")
+    testCompile("commons-io:commons-io:2.5")
 }

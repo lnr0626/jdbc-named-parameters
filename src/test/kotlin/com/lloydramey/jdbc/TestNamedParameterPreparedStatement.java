@@ -1,9 +1,9 @@
 package com.lloydramey.jdbc;
 
-import com.axiomalaska.jdbc.FileUtil;
+import kotlin.text.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -27,8 +27,9 @@ public class TestNamedParameterPreparedStatement {
 
     @Test
     public void testParsing2() throws IOException{
-        String testQuery = FileUtil.readFile(new File("src/test/resources/test.sql"));
-        String expectedParsedQuery = FileUtil.readFile(new File("src/test/resources/expected.sql"));
+        ClassLoader classLoader = getClass().getClassLoader();
+        String testQuery = IOUtils.toString(classLoader.getResourceAsStream("test.sql"), Charsets.UTF_8);
+        String expectedParsedQuery = IOUtils.toString(classLoader.getResourceAsStream("expected.sql"), Charsets.UTF_8);
         Map<String, List<Integer>> expectedParameterList = new HashMap<>();
         expectedParameterList.put("named_parameter1", Collections.singletonList(1));
         expectedParameterList.put("named_parameter2", Collections.singletonList(2));

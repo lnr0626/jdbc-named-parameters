@@ -1,1 +1,2 @@
 rootProject.name = 'jdbc-named-parameters'
+rootProject.buildFileName = "build.gradle.kts"

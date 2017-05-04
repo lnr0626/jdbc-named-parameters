@@ -16,143 +16,104 @@ class NamedParameterPreparedStatement internal constructor(val delegate: Prepare
 
     @Throws(SQLException::class)
     fun setNull(parameter: String, sqlType: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setNull(i, sqlType)
-        }
+        getParameterIndexes(parameter).forEach { i -> setNull(i, sqlType) }
     }
 
     @Throws(SQLException::class)
     fun setBoolean(parameter: String, x: Boolean) {
-        for (i in getParameterIndexes(parameter)) {
-            setBoolean(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setBoolean(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setByte(parameter: String, x: Byte) {
-        for (i in getParameterIndexes(parameter)) {
-            setByte(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setByte(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setShort(parameter: String, x: Short) {
-        for (i in getParameterIndexes(parameter)) {
-            setShort(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setShort(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setInt(parameter: String, x: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setInt(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setInt(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setLong(parameter: String, x: Long) {
-        for (i in getParameterIndexes(parameter)) {
-            setLong(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setLong(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setFloat(parameter: String, x: Float) {
-        for (i in getParameterIndexes(parameter)) {
-            setFloat(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setFloat(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setDouble(parameter: String, x: Float) {
-        for (i in getParameterIndexes(parameter)) {
-            setDouble(i, x.toDouble())
-        }
+        getParameterIndexes(parameter).forEach { i -> setDouble(i, x.toDouble()) }
     }
 
     @Throws(SQLException::class)
     fun setBigDecimal(parameter: String, x: BigDecimal) {
-        for (i in getParameterIndexes(parameter)) {
-            setBigDecimal(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setBigDecimal(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setString(parameter: String, x: String) {
-        for (i in getParameterIndexes(parameter)) {
-            setString(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setString(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setBytes(parameter: String, x: ByteArray) {
-        for (i in getParameterIndexes(parameter)) {
-            setBytes(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setBytes(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setDate(parameter: String, x: Date) {
-        for (i in getParameterIndexes(parameter)) {
-            setDate(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setDate(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setTime(parameter: String, x: Time) {
-        for (i in getParameterIndexes(parameter)) {
-            setTime(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setTime(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setTimestamp(parameter: String, x: Timestamp) {
-        for (i in getParameterIndexes(parameter)) {
-            setTimestamp(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setTimestamp(i, x) }
     }
 
     @Throws(SQLException::class)
     fun setAsciiStream(parameter: String, x: InputStream) {
-        for (i in getParameterIndexes(parameter)) {
-            setAsciiStream(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setAsciiStream(i, x) }
     }
 
+    @Suppress("DEPRECATION")
     @Deprecated("")
     @Throws(SQLException::class)
     fun setUnicodeStream(parameter: String, x: InputStream, length: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setUnicodeStream(i, x, length)
-        }
+        getParameterIndexes(parameter).forEach { i -> setUnicodeStream(i, x, length) }
     }
 
     @Throws(SQLException::class)
     fun setBinaryStream(parameter: String, x: InputStream, length: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setBinaryStream(i, x, length)
-        }
+        getParameterIndexes(parameter).forEach { i -> setBinaryStream(i, x, length) }
     }
 
     @Throws(SQLException::class)
     fun setObject(parameter: String, x: Any, targetSqlType: Int, scale: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setObject(i, x, targetSqlType, scale)
-        }
+        getParameterIndexes(parameter).forEach { i -> setObject(i, x, targetSqlType, scale) }
     }
 
     @Throws(SQLException::class)
     fun setObject(parameter: String, x: Any, targetSqlType: Int) {
-        for (i in getParameterIndexes(parameter)) {
-            setObject(i, x, targetSqlType)
-        }
+        getParameterIndexes(parameter).forEach { i -> setObject(i, x, targetSqlType) }
     }
 
     @Throws(SQLException::class)
     fun setObject(parameter: String, x: Any) {
-        for (i in getParameterIndexes(parameter)) {
-            setObject(i, x)
-        }
+        getParameterIndexes(parameter).forEach { i -> setObject(i, x) }
     }
 
 }

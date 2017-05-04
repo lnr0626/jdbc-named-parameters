@@ -1,5 +1,4 @@
-import org.gradle.api.JavaVersion
-import org.gradle.api.tasks.compile.JavaCompile
+
 import org.gradle.script.lang.kotlin.dependencies
 import org.gradle.script.lang.kotlin.eclipse
 import org.gradle.script.lang.kotlin.idea
@@ -7,27 +6,20 @@ import org.gradle.script.lang.kotlin.java
 import org.gradle.script.lang.kotlin.maven
 import org.gradle.script.lang.kotlin.repositories
 import org.gradle.script.lang.kotlin.testCompile
+import org.gradle.script.lang.kotlin.version
 
 plugins {
     java
     maven
     idea
     eclipse
+    id("nebula.kotlin") version("1.1.2")
 }
 
 group = "com.lloydramey.jdbc"
 version = "0.0.1-SNAPSHOT"
 
 description = """JDBC Named Parameters"""
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.withType(JavaCompile::class.java) {
-    options.encoding = "UTF-8"
-}
 
 repositories {
     jcenter()

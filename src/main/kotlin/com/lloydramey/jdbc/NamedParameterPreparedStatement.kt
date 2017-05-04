@@ -180,7 +180,7 @@ internal fun parse(query: String): ParseResult {
                     j++
                 }
                 val name = query.substring(i + 1, j)
-                params[name] = (params[name] ?: listOf()) + index
+                params[name] = (params[name] ?: listOf()) + (index++)
                 c = '?' // replace the parameter with a question mark
                 i += name.length // skip past the end if the parameter
             }

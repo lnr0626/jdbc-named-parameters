@@ -25,7 +25,7 @@ bintray {
 dokka {
     outputFormat = 'javadoc'
     outputDirectory = "$buildDir/javadoc"
-    processConfigurations = ['compile', 'extra']
+    processConfigurations = ['compile']
     linkMapping {
         dir = "src/main/kotlin"
         url = "https://github.com/lnr0626/jdbc-named-parameters/blob/master/src/main/kotlin"
@@ -38,7 +38,7 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar) {
+task javadocJar(type: Jar, dependsOn: dokka) {
     from dokka.outputDirectory
 }
 

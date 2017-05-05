@@ -9,7 +9,7 @@ import java.sql.SQLException
 import java.sql.Time
 import java.sql.Timestamp
 
-class NamedParameterPreparedStatement internal constructor(val delegate: PreparedStatement, val parseResult: ParseResult) : PreparedStatement by delegate {
+class NamedParameterPreparedStatement private constructor(val delegate: PreparedStatement, val parseResult: ParseResult) : PreparedStatement by delegate {
     
     companion object {
         @Throws(SQLException::class)

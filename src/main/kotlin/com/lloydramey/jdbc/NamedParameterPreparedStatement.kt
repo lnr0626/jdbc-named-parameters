@@ -125,68 +125,64 @@ fun createNamedPreparedStatement(conn: Connection, sql: String): NamedParameterP
 
 data class ParseResult(val sql: String, val parameters: Map<String, List<Int>>)
 
+enum class ParseState {SINGLE_QUOTE, DOUBLE_QUOTE, SINGLE_LINE_COMMENT, MULTI_LINE_COMMENT, PLAIN; }
+
+tailrec internal fun parse(query: String, pos: Int, state: ParseState, convertedSql: String, params: List<String>): ParseResult {
+    if (pos >= query.length) {
+        val map = params.mapIndexed { index, param -> param to index + 1 }.groupBy({ it.first }, { it.second })
+        return ParseResult(convertedSql, map)
+    }
+
+    val current = query[pos]
+    val next = if (query.length > pos + 1) query[pos + 1] else null
+
+    when (state) {
+        ParseState.SINGLE_QUOTE ->
+            if (current == '\'') return parse(query, pos + 1, ParseState.PLAIN, convertedSql + current, params)
+            else return parse(query, pos + 1, ParseState.SINGLE_QUOTE, convertedSql + current, params)
+        ParseState.DOUBLE_QUOTE ->
+            if (current == '"') return parse(query, pos + 1, ParseState.PLAIN, convertedSql + current, params)
+            else return parse(query, pos + 1, ParseState.DOUBLE_QUOTE, convertedSql + current, params)
+        ParseState.SINGLE_LINE_COMMENT ->
+            if (current == '\n') return parse(query, pos + 1, ParseState.PLAIN, convertedSql + current, params)
+            else return parse(query, pos + 1, ParseState.SINGLE_LINE_COMMENT, convertedSql + current, params)
+        ParseState.MULTI_LINE_COMMENT ->
+            if (current == '*' && next == '/') return parse(query, pos + 2, ParseState.PLAIN, convertedSql + current + next, params)
+            else return parse(query, pos + 1, ParseState.MULTI_LINE_COMMENT, convertedSql + current, params)
+        ParseState.PLAIN ->
+            if (current == '\'') return parse(query, pos + 1, ParseState.SINGLE_QUOTE, convertedSql + current, params)
+            else if (current == '"') return parse(query, pos + 1, ParseState.DOUBLE_QUOTE, convertedSql + current, params)
+            else if (current == '/' && next == '*') return parse(query, pos + 2, ParseState.MULTI_LINE_COMMENT, convertedSql + current + next, params)
+            else if (current == '-' && next == '-') return parse(query, pos + 2, ParseState.SINGLE_LINE_COMMENT, convertedSql + current + next, params)
+            else if (current == ':' && next != null && Character.isJavaIdentifierStart(next)) {
+                val nameLength = identifierLength(query, pos + 1)
+                val name = query.substring(pos + 1, pos + 1 + nameLength)
+                return parse(query, pos + 1 + nameLength, ParseState.PLAIN, convertedSql + '?', params + name)
+            } else return parse(query, pos + 1, ParseState.PLAIN, convertedSql + current, params)
+    }
+}
+
+tailrec internal fun identifierLength(str: String, pos: Int, size: Int = 0): Int {
+    if (size == 0) {
+        if (Character.isJavaIdentifierStart(str[pos])) return identifierLength(str, pos + 1, size + 1)
+        else return 0
+    } else {
+        if (Character.isJavaIdentifierPart(str[pos])) return identifierLength(str, pos + 1, size + 1)
+        else return size
+    }
+}
+
 /**
  * Parse the query string containing named parameters and result a parse result, which holds
  * the parsed sql (named parameters replaced by standard '?' parameters and an ordered list of the
  * named parameters.
  *
- * SQL parsing code borrowed from Adam Crume. Thanks Adam.
+ * Original SQL parsing code borrowed from Adam Crume. Thanks Adam.
  * See <a href="http://www.javaworld.com/article/2077706/core-java/named-parameters-for-preparedstatement.html?page=2">http://www.javaworld.com/article/2077706/core-java/named-parameters-for-preparedstatement.html?page=2</a>
  *
  * @param query Query containing named parameters
  * @return ParseResult
  */
 internal fun parse(query: String): ParseResult {
-    val length = query.length
-    val parsedQuery = StringBuffer(length)
-    var inSingleQuote = false
-    var inDoubleQuote = false
-    var inSingleLineComment = false
-    var inMultiLineComment = false
-    var index = 1
-    val params = mutableMapOf<String, List<Int>>()
-
-    var i = 0
-    while (i < length) {
-        var c = query[i]
-        if (inSingleQuote) {
-            if (c == '\'') {
-                inSingleQuote = false
-            }
-        } else if (inDoubleQuote) {
-            if (c == '"') {
-                inDoubleQuote = false
-            }
-        } else if (inMultiLineComment) {
-            if (c == '*' && query[i + 1] == '/') {
-                inMultiLineComment = false
-            }
-        } else if (inSingleLineComment) {
-            if (c == '\n') {
-                inSingleLineComment = false
-            }
-        } else {
-            if (c == '\'') {
-                inSingleQuote = true
-            } else if (c == '"') {
-                inDoubleQuote = true
-            } else if (c == '/' && query[i + 1] == '*') {
-                inMultiLineComment = true
-            } else if (c == '-' && query[i + 1] == '-') {
-                inSingleLineComment = true
-            } else if (c == ':' && i + 1 < length && Character.isJavaIdentifierStart(query[i + 1])) {
-                var j = i + 2
-                while (j < length && Character.isJavaIdentifierPart(query[j])) {
-                    j++
-                }
-                val name = query.substring(i + 1, j)
-                params[name] = (params[name] ?: listOf()) + (index++)
-                c = '?' // replace the parameter with a question mark
-                i += name.length // skip past the end if the parameter
-            }
-        }
-        parsedQuery.append(c)
-        i++
-    }
-    return ParseResult(parsedQuery.toString(), params)
+    return parse(query, 0, ParseState.PLAIN, "", listOf())
 }

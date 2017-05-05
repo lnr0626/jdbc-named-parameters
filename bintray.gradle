@@ -5,7 +5,6 @@ bintray {
     pkg {
         repo = 'repo'
         name = 'jdbc-named-parameters'
-        userOrg = user
         licenses = ['Apache-2.0']
         websiteUrl = "http://github.com/lnr0626/jdbc-named-parameters"
         vcsUrl = "http://github.com/lnr0626/jdbc-named-parameters.git"

@@ -9,7 +9,7 @@ import java.sql.SQLException
 import java.sql.Time
 import java.sql.Timestamp
 
-class NamedParameterPreparedStatement internal constructor(val delegate: PreparedStatement, val parseResult: ParseResult) : PreparedStatement by delegate {
+class InternalNamedParameterPreparedStatement internal constructor(val delegate: PreparedStatement, val parseResult: ParseResult) : PreparedStatement by delegate {
 
     private fun getParameterIndexes(parameter: String): Collection<Int> =
         parseResult.parameters[parameter] ?: throw IllegalArgumentException("SQL statement doesn't contain the parameter '$parameter")
@@ -118,9 +118,9 @@ class NamedParameterPreparedStatement internal constructor(val delegate: Prepare
 
 }
 
-fun createNamedPreparedStatement(conn: Connection, sql: String): NamedParameterPreparedStatement {
+fun createNamedPreparedStatement(conn: Connection, sql: String): InternalNamedParameterPreparedStatement {
     val res = parse(sql)
-    return NamedParameterPreparedStatement(conn.prepareStatement(res.sql), res)
+    return InternalNamedParameterPreparedStatement(conn.prepareStatement(res.sql), res)
 }
 
 data class ParseResult(val sql: String, val parameters: Map<String, List<Int>>)
